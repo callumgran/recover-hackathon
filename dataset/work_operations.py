@@ -5,7 +5,6 @@ import typing
 from pathlib import Path
 from urllib.error import URLError
 
-import kaggle
 import numpy as np
 import polars as pl
 import torch
@@ -57,9 +56,6 @@ class WorkOperationsDataset(BaseDataset):
 
         self.np_rng = np_rng if np_rng is not None else np.random.default_rng(seed)
         self.py_rng = py_rng if py_rng is not None else random.Random(seed)
-
-        if download:
-            self.download()
 
         if not self._check_exists():
             raise RuntimeError("Dataset not found. You can use download=True to download it.")
@@ -198,23 +194,6 @@ class WorkOperationsDataset(BaseDataset):
             )
         )
         return tickets
-
-    def download(self) -> None:
-        if self._check_exists():
-            return
-
-        load_dotenv()
-
-        kaggle.api.authenticate()
-        for filename in self.resources:
-            try:
-                kaggle.api.competition_download_file(
-                    self.competition,
-                    filename,
-                    path=self.data_folder,
-                )
-            except URLError as e:
-                raise RuntimeError(f"Failed to download {filename}. Please check your network connection.") from e
 
     def _check_exists(self) -> bool:
         return all(os.path.exists(os.path.join(self.data_folder, filename)) for filename in self.resources)

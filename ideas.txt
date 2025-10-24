@@ -1,0 +1,4 @@
+Postcode in same area and same date -> likely same event that has caused damage
+
+If a room has multiple operations -> likely more damage than a room with a single so we should mark it as higher risk
+

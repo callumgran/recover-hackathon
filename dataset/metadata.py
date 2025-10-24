@@ -4,7 +4,6 @@ import typing
 from pathlib import Path
 from urllib.error import URLError
 
-import kaggle
 import polars as pl
 import torch
 from dotenv import load_dotenv
@@ -31,9 +30,6 @@ class MetadataDataset(BaseDataset):
         self.split = split
         self.num_companies = num_companies
 
-        if download:
-            self.download()
-
         self._load_data()
 
     def __len__(self):
@@ -54,23 +50,6 @@ class MetadataDataset(BaseDataset):
             "case_creation_year": int(row["case_creation_year"][0] or 0),
             "case_creation_month": int(row["case_creation_month"][0] or 0),
         }
-
-    def download(self) -> None:
-        if self._check_exists():
-            return
-
-        load_dotenv()
-
-        kaggle.api.authenticate()
-        for filename in self.resources:
-            try:
-                kaggle.api.competition_download_file(
-                    self.competition,
-                    filename,
-                    path=self.data_folder,
-                )
-            except URLError as e:
-                raise RuntimeError(f"Failed to download {filename}. Please check your network connection.") from e
 
     def _check_exists(self) -> bool:
         return all(os.path.exists(os.path.join(self.data_folder, filename)) for filename in self.resources)

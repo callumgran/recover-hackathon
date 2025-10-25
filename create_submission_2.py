@@ -41,7 +41,7 @@ def validate_loader(model, val_loader, device, threshold=0.2):
 def sweep_threshold(model, val_loader, device, grid=None):
     if grid is None:
         # grid = [0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50, 0.60]
-        grid = [0.17, 0.18, 0.19, 0.2, 0.21, 0.22]
+        grid = [0.17]
     scores = []
     for t in grid:
         s = validate_loader(model, val_loader, device, threshold=t)
@@ -129,7 +129,7 @@ class BaselineModel(nn.Module):
         return logits
 
 def main(
-    model_path="best_model_1024.pth",
+    model_path="best_model_128.pth",
     data_root="data",
     batch_size=128,
     threshold=0.2,

@@ -178,7 +178,6 @@ class WorkOperationsDataset(BaseDataset):
                 )
                 .alias("room_cluster_one_hot"),
             )
-            .filter(pl.col("wo_codes").list.len() > 1)
             .sort(["project_id", "room", "wo_codes"])
             .with_row_index()
             .sort("index")
